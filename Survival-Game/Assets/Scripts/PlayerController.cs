@@ -80,6 +80,7 @@ public class PlayerController : MonoBehaviour
     private Animator _animator;
     private CharacterController _controller;
     private GameObject _mainCamera;
+    private InputManager _input;
 
     private const float _threshold = 0.01f;
 
@@ -101,6 +102,7 @@ public class PlayerController : MonoBehaviour
 
         _hasAnimator = TryGetComponent(out _animator);
         _controller = GetComponent<CharacterController>();
+        _input = GetComponent<InputManager>();
 
         //AssignAnimationIDs();
 
@@ -123,10 +125,11 @@ public class PlayerController : MonoBehaviour
 
     private void Move()
     {
-        Vector2 move = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
+        //Vector2 move = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
+        Vector2 move = _input.move;
         // set target speed based on move speed, sprint speed and if sprint is pressed
 
-        float targetSpeed = Input.GetKey(KeyCode.LeftShift) ? SprintSpeed : MoveSpeed;
+        float targetSpeed = _input.sprint ? SprintSpeed : MoveSpeed;
 
         // a simplistic acceleration and deceleration designed to be easy to remove, replace, or iterate upon
 
@@ -137,7 +140,7 @@ public class PlayerController : MonoBehaviour
         // a reference to the players current horizontal velocity
         float currentHorizontalSpeed = new Vector3(_controller.velocity.x, 0.0f, _controller.velocity.z).magnitude;
 
-        float speedOffset = 0.1f;
+        float speedOffset = 0.0f;//0
         //float inputMagnitude = _input.analogMovement ? move.magnitude : 1f;
         float inputMagnitude = move.magnitude;
 
@@ -173,9 +176,10 @@ public class PlayerController : MonoBehaviour
             float rotation = Mathf.SmoothDampAngle(transform.eulerAngles.y, _targetRotation, ref _rotationVelocity, RotationSmoothTime);
 
             // rotate to face input direction relative to camera position
-            transform.rotation = Quaternion.Euler(0.0f, rotation, 0.0f);
+            //transform.rotation = Quaternion.Euler(0.0f, rotation, 0.0f);
+            transform.rotation = Quaternion.Euler(0.0f, _mainCamera.transform.eulerAngles.y, 0.0f);
         }
-
+        
 
         Vector3 targetDirection = Quaternion.Euler(0.0f, _targetRotation, 0.0f) * Vector3.forward;
 
@@ -192,7 +196,8 @@ public class PlayerController : MonoBehaviour
 
     private void CameraRotation()
     {
-        Vector2 look = new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
+        //Vector2 look = new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
+        Vector2 look = _input.look;
         // if there is an input and camera position is not fixed
         if (look.sqrMagnitude >= _threshold && !LockCameraPosition)
         {

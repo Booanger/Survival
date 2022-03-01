@@ -672,6 +672,7 @@ GameObject:
   - component: {fileID: 965088549}
   - component: {fileID: 965088552}
   - component: {fileID: 965088553}
+  - component: {fileID: 965088554}
   m_Layer: 0
   m_Name: Capsule
   m_TagString: Player
@@ -808,6 +809,22 @@ CharacterController:
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &965088554
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 965088547}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87615114b48de1444be1090ef6cec849, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  move: {x: 0, y: 0}
+  look: {x: 0, y: 0}
+  jump: 0
+  sprint: 0
 --- !u!1 &1123981558
 GameObject:
   m_ObjectHideFlags: 0

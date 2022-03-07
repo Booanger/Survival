@@ -9,12 +9,7 @@ public class InputManager : MonoBehaviour
     public Vector2 look;
     public bool jump;
     public bool sprint;
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    public bool changeCameraPosition;
 
     // Update is called once per frame
     void Update()
@@ -25,6 +20,7 @@ public class InputManager : MonoBehaviour
 
     private void Move()
     {
+        jump = Input.GetButtonDown("Jump");
         move.x = Input.GetAxis("Horizontal");
         move.y = Input.GetAxis("Vertical");
         sprint = Input.GetKey(KeyCode.LeftShift);
@@ -32,6 +28,8 @@ public class InputManager : MonoBehaviour
 
     private void Look()
     {
+        //changeCameraPosition = Input.GetKeyDown(KeyCode.V);
+        changeCameraPosition = Input.GetKeyDown(KeyCode.V) ? !changeCameraPosition : changeCameraPosition;
         look.x = Input.GetAxis("Mouse X");
         look.y = Input.GetAxis("Mouse Y");
     }

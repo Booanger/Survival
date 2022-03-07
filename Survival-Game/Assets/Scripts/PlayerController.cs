@@ -1,3 +1,4 @@
+using Cinemachine;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -51,12 +52,10 @@ public class PlayerController : MonoBehaviour
     [Tooltip("Speed of the main camera")]
     public float CameraSpeed = 200f;
 
-
-
-
     // cinemachine
     private float _cinemachineTargetYaw;
     private float _cinemachineTargetPitch;
+    private CinemachineVirtualCamera virtualCamera;
 
     // player
     private float _speed;
@@ -92,6 +91,7 @@ public class PlayerController : MonoBehaviour
         if (_mainCamera == null)
         {
             _mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
+            virtualCamera = GameObject.FindObjectOfType<CinemachineVirtualCamera>();
         }
     }
     // Start is called before the first frame update
@@ -114,9 +114,9 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        GroundedCheck();
+        JumpAndGravity();
         Move();
-
-        //transform.Translate(deltaX * Time.deltaTime, 0, deltaZ * Time.deltaTime);
     }
     private void LateUpdate()
     {
@@ -140,25 +140,10 @@ public class PlayerController : MonoBehaviour
         // a reference to the players current horizontal velocity
         float currentHorizontalSpeed = new Vector3(_controller.velocity.x, 0.0f, _controller.velocity.z).magnitude;
 
-        float speedOffset = 0.0f;//0
+        float speedOffset = 0.0f;
         //float inputMagnitude = _input.analogMovement ? move.magnitude : 1f;
         float inputMagnitude = move.magnitude;
-
-        /*
-        // accelerate or decelerate to target speed
-        if (currentHorizontalSpeed < targetSpeed - speedOffset || currentHorizontalSpeed > targetSpeed + speedOffset)
-        {
-            // creates curved result rather than a linear one giving a more organic speed change
-            // note T in Lerp is clamped, so we don't need to clamp our speed
-            _speed = Mathf.Lerp(currentHorizontalSpeed, targetSpeed * inputMagnitude, Time.deltaTime * SpeedChangeRate);
-
-            // round speed to 3 decimal places
-            _speed = Mathf.Round(_speed * 1000f) / 1000f;
-        }
-        else
-        {
-            _speed = targetSpeed;
-        }*/
+        
         _speed = targetSpeed;
 
         _animationBlend = Mathf.Lerp(_animationBlend, targetSpeed, Time.deltaTime * SpeedChangeRate);
@@ -166,10 +151,7 @@ public class PlayerController : MonoBehaviour
         // normalise input direction
         Vector3 inputDirection = new Vector3(move.x, 0.0f, move.y).normalized;
 
-        // note: Vector2's != operator uses approximation so is not floating point error prone, and is cheaper than magnitude
-        // if there is a move input rotate player when the player is moving
-
-        
+        // if there is a move input rotate player when the player is moving      
         if (move != Vector2.zero)
         {
             _targetRotation = Mathf.Atan2(inputDirection.x, inputDirection.z) * Mathf.Rad2Deg + _mainCamera.transform.eulerAngles.y;
@@ -180,7 +162,6 @@ public class PlayerController : MonoBehaviour
             transform.rotation = Quaternion.Euler(0.0f, _mainCamera.transform.eulerAngles.y, 0.0f);
         }
         
-
         Vector3 targetDirection = Quaternion.Euler(0.0f, _targetRotation, 0.0f) * Vector3.forward;
 
         // move the player
@@ -196,9 +177,11 @@ public class PlayerController : MonoBehaviour
 
     private void CameraRotation()
     {
+        virtualCamera.GetCinemachineComponent<Cinemachine3rdPersonFollow>().CameraSide = _input.changeCameraPosition ? 0.25f : 0.75f;
         //Vector2 look = new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
         Vector2 look = _input.look;
         // if there is an input and camera position is not fixed
+
         if (look.sqrMagnitude >= _threshold && !LockCameraPosition)
         {
             _cinemachineTargetYaw += look.x * Time.deltaTime * CameraSpeed;
@@ -227,5 +210,89 @@ public class PlayerController : MonoBehaviour
         _animIDJump = Animator.StringToHash("Jump");
         _animIDFreeFall = Animator.StringToHash("FreeFall");
         _animIDMotionSpeed = Animator.StringToHash("MotionSpeed");
+    }
+
+    private void JumpAndGravity()
+    {
+        if (Grounded)
+        {
+            // reset the fall timeout timer
+            _fallTimeoutDelta = FallTimeout;
+
+            // update animator if using character
+            if (_hasAnimator)
+            {
+                _animator.SetBool(_animIDJump, false);
+                _animator.SetBool(_animIDFreeFall, false);
+            }
+
+            // stop our velocity dropping infinitely when grounded
+            if (_verticalVelocity < 0.0f)
+            {
+                _verticalVelocity = -2f;
+            }
+
+            // Jump
+            if (_input.jump && _jumpTimeoutDelta <= 0.0f)
+            {
+                // the square root of H * -2 * G = how much velocity needed to reach desired height
+                _verticalVelocity = Mathf.Sqrt(JumpHeight * -2f * Gravity);
+
+                // update animator if using character
+                if (_hasAnimator)
+                {
+                    _animator.SetBool(_animIDJump, true);
+                }
+            }
+
+            // jump timeout
+            if (_jumpTimeoutDelta >= 0.0f)
+            {
+                _jumpTimeoutDelta -= Time.deltaTime;
+            }
+        }
+        else
+        {
+            // reset the jump timeout timer
+            _jumpTimeoutDelta = JumpTimeout;
+
+            // fall timeout
+            if (_fallTimeoutDelta >= 0.0f)
+            {
+                _fallTimeoutDelta -= Time.deltaTime;
+            }
+            else
+            {
+                // update animator if using character
+                if (_hasAnimator)
+                {
+                    _animator.SetBool(_animIDFreeFall, true);
+                }
+            }
+
+            // if we are not grounded, do not jump
+            _input.jump = false;
+        }
+
+        // apply gravity over time if under terminal (multiply by delta time twice to linearly speed up over time)
+        if (_verticalVelocity < _terminalVelocity)
+        {
+            _verticalVelocity += Gravity * Time.deltaTime;
+        }
+
+
+    }
+
+    private void GroundedCheck()
+    {
+        // set sphere position, with offset
+        Vector3 spherePosition = new Vector3(transform.position.x, transform.position.y - GroundedOffset, transform.position.z);
+        Grounded = Physics.CheckSphere(spherePosition, GroundedRadius, GroundLayers, QueryTriggerInteraction.Ignore);
+
+        // update animator if using character
+        if (_hasAnimator)
+        {
+            _animator.SetBool(_animIDGrounded, Grounded);
+        }
     }
 }

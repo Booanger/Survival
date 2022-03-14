@@ -86,6 +86,7 @@ namespace StarterAssets
 		private CharacterController _controller;
 		private StarterAssetsInputs _input;
 		private GameObject _mainCamera;
+		public GameObject LookTargetObject;
 
 		private const float _threshold = 0.01f;
 
@@ -125,6 +126,7 @@ namespace StarterAssets
 		private void LateUpdate()
 		{
 			CameraRotation();
+			LookTarget();
 		}
 
 		private void AssignAnimationIDs()
@@ -313,6 +315,25 @@ namespace StarterAssets
 			
 			// when selected, draw a gizmo in the position of, and matching radius of, the grounded collider
 			Gizmos.DrawSphere(new Vector3(transform.position.x, transform.position.y - GroundedOffset, transform.position.z), GroundedRadius);
+		}
+
+		private void LookTarget()
+		{
+			Vector3 offset = new Vector3(0, 1.5f, 0);
+
+
+			float dotValue = Vector3.Dot(transform.forward, CinemachineCameraTarget.transform.forward);
+			Debug.Log(dotValue);
+            if (dotValue > 0)
+            {
+				Vector3 PositionOfLookTarget = transform.position + offset + CinemachineCameraTarget.transform.forward;
+				LookTargetObject.transform.position = Vector3.Lerp(LookTargetObject.transform.position, PositionOfLookTarget, 5f * Time.deltaTime);
+            }
+            else
+            {
+				LookTargetObject.transform.position = 
+					Vector3.Lerp(LookTargetObject.transform.position, transform.position + offset + transform.forward, 5f * Time.deltaTime);
+            }
 		}
 	}
 }

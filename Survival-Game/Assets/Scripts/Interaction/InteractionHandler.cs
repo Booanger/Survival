@@ -38,11 +38,12 @@ public class InteractionHandler : MonoBehaviour
         Debug.DrawLine(_camera.transform.position, hit.point, Color.red);
     }
 
+    /**
     private void OnApplicationQuit()
     {
-        /* Bu satýr deðiþtirilebilir oyun kapanýp geri açýldýðýnda envantere eklenen objeler envanterde
-         * kalýyor ama sahnede tekrar oluþuyorlar bunu önlemek lazým
-         */
+        //Bu satýr deðiþtirilebilir oyun kapanýp geri açýldýðýnda envantere eklenen objeler envanterde
+        //kalýyor ama sahnede tekrar oluþuyorlar bunu önlemek lazým
+         
         Inventory.inventory.Container = new InventorySlot[Inventory.inventory.inventorySize];
-    }
+    }*/
 }

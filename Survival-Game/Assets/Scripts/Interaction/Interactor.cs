@@ -1,13 +1,13 @@
 using UnityEngine;
 
-public class InteractionHandler : MonoBehaviour
+public class Interactor : MonoBehaviour
 {
     [SerializeField] private float maxDistance;
-    [SerializeField] private Material highlighMaterial;
-    [SerializeField] LayerMask interactionLayer;
+    //[SerializeField] private Material highlighMaterial;
+    //[SerializeField] LayerMask interactionLayer;
     private Camera _camera;
-    [SerializeField] Transform _rightHand;
-    [field : SerializeField] public Inventory Inventory { get; private set; }
+    //[SerializeField] Transform _rightHand
+    [field : SerializeField] public InventorySystem Inventory { get; private set; }
 
     RaycastHit hit;
 
@@ -16,7 +16,7 @@ public class InteractionHandler : MonoBehaviour
     {
         _camera = transform.parent.GetComponentInChildren<Camera>();
         Debug.Log(_camera);
-        Inventory = GetComponent<Inventory>();
+        Inventory = GetComponent<InventorySystem>();
     }
 
     // Update is called once per frame

@@ -6,21 +6,23 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "New Inventory", menuName = "Inventory System/Inventory", order = 0)]
 public class InventoryObject : ScriptableObject
 {
-    public int inventorySize;
+    public int Size => Container.Length;
     public InventorySlot[] Container; // Private?
     //public List<InventorySlot> Container;
 
     private void Awake()
     {
-        Container = new InventorySlot[inventorySize];
+        Container = new InventorySlot[Size];
         //new List<InventorySlot>(inventorySize);
         InitializeSlots();
+
+        
     }
 
     void InitializeSlots()
     {
         // Inýtialize empty slots later change here to get items from database
-        for (int i = 0; i < inventorySize; i++)
+        for (int i = 0; i < Size; i++)
         {
             Container[i] = new InventorySlot();
         }
@@ -28,7 +30,7 @@ public class InventoryObject : ScriptableObject
 
     public void AddItem(ItemObject item, ref int amounts)
     {
-        for (int i = 0; i < inventorySize; i++)
+        for (int i = 0; i < Size; i++)
         {
             if (Container[i].Item == item && amounts > 0)
             {
@@ -37,7 +39,7 @@ public class InventoryObject : ScriptableObject
         }
         if (amounts > 0)
         {
-            for (int i = 0; i < inventorySize; i++)
+            for (int i = 0; i < Size; i++)
             {
                 if (!Container[i].Item)
                 {
@@ -47,16 +49,33 @@ public class InventoryObject : ScriptableObject
             }
         }
     }
+
+    public void RemoveItem(int index)
+    {
+        Container[index].ClearSlot();
+        //Container[index].Item = null;
+        //Container[index].CurrentAmounts = 0;
+    }
 }
 
 [System.Serializable]
 public class InventorySlot
 {
-    //[SerializeField] private ItemObject _item;
+    [SerializeField] private ItemObject _item;
+    [SerializeField] private int _amount;
 
-    public ItemObject Item; // change to get private set later
-    public int CurrentAmounts;
-    public bool IsEmpty => CurrentAmounts == Item.maxStack;
+    public ItemObject Item 
+    { 
+        get { return _item; } 
+        //set { _item = value; } 
+    
+    }
+
+    public int CurrentAmounts { get { return _amount; } }
+
+    public int index;
+
+    public bool IsFull => CurrentAmounts == Item.maxStack;
 
     /// <summary>
     /// Use this to create inventory slot that contains amount of <paramref name="item"/>
@@ -70,15 +89,15 @@ public class InventorySlot
     {
         if(item)
         {
-            Item = item;
+            _item = item;
             if (item.maxStack > amounts)
             {
-                CurrentAmounts = amounts;
+                _amount = amounts;
                 amounts = 0;
             }
             else
             {
-                CurrentAmounts = item.maxStack;
+                _amount = item.maxStack;
                 amounts -= item.maxStack;
             }
         }
@@ -89,8 +108,13 @@ public class InventorySlot
     /// </summary>
     public InventorySlot()
     {
-        Item = null;
-        CurrentAmounts = 0;
+        ClearSlot();
+    }
+
+    public void ClearSlot()
+    {
+        _item = null;
+        _amount = 0;
     }
 
     /// <summary>
@@ -101,11 +125,11 @@ public class InventorySlot
     {
         if (Item)
         {
-            CurrentAmounts += amounts;
+            _amount += amounts;
             if (CurrentAmounts >= Item.maxStack)
             {
                 amounts = CurrentAmounts - Item.maxStack;
-                CurrentAmounts = Item.maxStack;
+                _amount = Item.maxStack;
             } 
             else
             {
@@ -118,8 +142,8 @@ public class InventorySlot
     {
         if (!Item && item)
         {
-            Item = item;
-            CurrentAmounts = 0;
+            _item = item;
+            _amount = 0;
             //TryAddAmounts(ref amounts);
         }
         if (Item == item)

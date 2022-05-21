@@ -12,89 +12,130 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e1cdb02e837872a4c8956260e3cacd76, type: 3}
   m_Name: Player Inventory
   m_EditorClassIdentifier: 
-  inventorySize: 42
   Container:
-  - Item: {fileID: 0}
-    CurrentAmounts: 0
-  - Item: {fileID: 0}
-    CurrentAmounts: 0
-  - Item: {fileID: 0}
-    CurrentAmounts: 0
-  - Item: {fileID: 0}
-    CurrentAmounts: 0
-  - Item: {fileID: 0}
-    CurrentAmounts: 0
-  - Item: {fileID: 0}
-    CurrentAmounts: 0
-  - Item: {fileID: 0}
-    CurrentAmounts: 0
-  - Item: {fileID: 0}
-    CurrentAmounts: 0
-  - Item: {fileID: 0}
-    CurrentAmounts: 0
-  - Item: {fileID: 0}
-    CurrentAmounts: 0
-  - Item: {fileID: 0}
-    CurrentAmounts: 0
-  - Item: {fileID: 0}
-    CurrentAmounts: 0
-  - Item: {fileID: 0}
-    CurrentAmounts: 0
-  - Item: {fileID: 0}
-    CurrentAmounts: 0
-  - Item: {fileID: 0}
-    CurrentAmounts: 0
-  - Item: {fileID: 0}
-    CurrentAmounts: 0
-  - Item: {fileID: 0}
-    CurrentAmounts: 0
-  - Item: {fileID: 0}
-    CurrentAmounts: 0
-  - Item: {fileID: 0}
-    CurrentAmounts: 0
-  - Item: {fileID: 0}
-    CurrentAmounts: 0
-  - Item: {fileID: 0}
-    CurrentAmounts: 0
-  - Item: {fileID: 0}
-    CurrentAmounts: 0
-  - Item: {fileID: 0}
-    CurrentAmounts: 0
-  - Item: {fileID: 0}
-    CurrentAmounts: 0
-  - Item: {fileID: 0}
-    CurrentAmounts: 0
-  - Item: {fileID: 0}
-    CurrentAmounts: 0
-  - Item: {fileID: 0}
-    CurrentAmounts: 0
-  - Item: {fileID: 0}
-    CurrentAmounts: 0
-  - Item: {fileID: 0}
-    CurrentAmounts: 0
-  - Item: {fileID: 0}
-    CurrentAmounts: 0
-  - Item: {fileID: 0}
-    CurrentAmounts: 0
-  - Item: {fileID: 0}
-    CurrentAmounts: 0
-  - Item: {fileID: 0}
-    CurrentAmounts: 0
-  - Item: {fileID: 0}
-    CurrentAmounts: 0
-  - Item: {fileID: 0}
-    CurrentAmounts: 0
-  - Item: {fileID: 0}
-    CurrentAmounts: 0
-  - Item: {fileID: 0}
-    CurrentAmounts: 0
-  - Item: {fileID: 0}
-    CurrentAmounts: 0
-  - Item: {fileID: 0}
-    CurrentAmounts: 0
-  - Item: {fileID: 0}
-    CurrentAmounts: 0
-  - Item: {fileID: 0}
-    CurrentAmounts: 0
-  - Item: {fileID: 0}
-    CurrentAmounts: 0
+  - _item: {fileID: 11400000, guid: 692a15f5c95ff614c864635a55f6198b, type: 2}
+    _amount: 2
+    index: 0
+  - _item: {fileID: 11400000, guid: 692a15f5c95ff614c864635a55f6198b, type: 2}
+    _amount: 1
+    index: 0
+  - _item: {fileID: 11400000, guid: 692a15f5c95ff614c864635a55f6198b, type: 2}
+    _amount: 2
+    index: 0
+  - _item: {fileID: 0}
+    _amount: 0
+    index: 0
+  - _item: {fileID: 0}
+    _amount: 0
+    index: 0
+  - _item: {fileID: 0}
+    _amount: 0
+    index: 0
+  - _item: {fileID: 0}
+    _amount: 0
+    index: 0
+  - _item: {fileID: 0}
+    _amount: 0
+    index: 0
+  - _item: {fileID: 0}
+    _amount: 0
+    index: 0
+  - _item: {fileID: 0}
+    _amount: 0
+    index: 0
+  - _item: {fileID: 0}
+    _amount: 0
+    index: 0
+  - _item: {fileID: 0}
+    _amount: 0
+    index: 0
+  - _item: {fileID: 0}
+    _amount: 0
+    index: 0
+  - _item: {fileID: 0}
+    _amount: 0
+    index: 0
+  - _item: {fileID: 0}
+    _amount: 0
+    index: 0
+  - _item: {fileID: 0}
+    _amount: 0
+    index: 0
+  - _item: {fileID: 0}
+    _amount: 0
+    index: 0
+  - _item: {fileID: 0}
+    _amount: 0
+    index: 0
+  - _item: {fileID: 0}
+    _amount: 0
+    index: 0
+  - _item: {fileID: 0}
+    _amount: 0
+    index: 0
+  - _item: {fileID: 0}
+    _amount: 0
+    index: 0
+  - _item: {fileID: 0}
+    _amount: 0
+    index: 0
+  - _item: {fileID: 0}
+    _amount: 0
+    index: 0
+  - _item: {fileID: 0}
+    _amount: 0
+    index: 0
+  - _item: {fileID: 0}
+    _amount: 0
+    index: 0
+  - _item: {fileID: 0}
+    _amount: 0
+    index: 0
+  - _item: {fileID: 0}
+    _amount: 0
+    index: 0
+  - _item: {fileID: 0}
+    _amount: 0
+    index: 0
+  - _item: {fileID: 0}
+    _amount: 0
+    index: 0
+  - _item: {fileID: 0}
+    _amount: 0
+    index: 0
+  - _item: {fileID: 0}
+    _amount: 0
+    index: 0
+  - _item: {fileID: 0}
+    _amount: 0
+    index: 0
+  - _item: {fileID: 0}
+    _amount: 0
+    index: 0
+  - _item: {fileID: 0}
+    _amount: 0
+    index: 0
+  - _item: {fileID: 0}
+    _amount: 0
+    index: 0
+  - _item: {fileID: 0}
+    _amount: 0
+    index: 0
+  - _item: {fileID: 0}
+    _amount: 0
+    index: 0
+  - _item: {fileID: 0}
+    _amount: 0
+    index: 0
+  - _item: {fileID: 0}
+    _amount: 0
+    index: 0
+  - _item: {fileID: 0}
+    _amount: 0
+    index: 0
+  - _item: {fileID: 0}
+    _amount: 0
+    index: 0
+  - _item: {fileID: 0}
+    _amount: 0
+    index: 0

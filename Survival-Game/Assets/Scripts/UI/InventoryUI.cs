@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -8,7 +9,7 @@ using UnityEngine.UI;
 public class InventoryUI : MonoBehaviour, IPointerEnterHandler
 {
     [SerializeField] Transform slotHolderGrid;
-    [SerializeField] Inventory playerInventory;
+    [SerializeField] InventorySystem playerInventory;
     [SerializeField] GameObject slotPrefab;
 
     private Transform currentHoveredSlot;
@@ -25,7 +26,7 @@ public class InventoryUI : MonoBehaviour, IPointerEnterHandler
 
     private void InitializeSlots()
     {
-        for (int i = 0; i < playerInventory.inventory.Container.Length; i++)
+        for (int i = 0; i < playerInventory.Inventory.Container.Length; i++)
         {
             Instantiate(slotPrefab, slotHolderGrid);
         }
@@ -42,27 +43,36 @@ public class InventoryUI : MonoBehaviour, IPointerEnterHandler
                 eventID = EventTriggerType.PointerEnter,
                 callback = new EventTrigger.TriggerEvent()
             };
+            entry.callback.AddListener((eventData) => 
+            { 
+                OnPointerEnterToButton(currentSlot); 
+            });
 
-            entry.callback.AddListener((eventData) => { OnPointerEnterToButton(currentSlot); });
-            //entry.callback.AddListener(delegate { OnPointerEnterToButton(PointerEventData); });
-            //UnityEngine.Events.UnityAction<BaseEventData> call = new UnityEngine.Events.UnityAction<BaseEventData>(OnPointerEnterToButton);
             currentSlot.GetComponent<EventTrigger>().triggers.Add(entry);
         }
     }
 
-    private void OnPointerEnterToButton(Transform currentSlot)
-    {
-        currentHoveredSlot = currentSlot;
-        currentHoveredSlot.GetComponent<Image>().color = Color.red;
-    }
+    private void OnPointerEnterToButton(Transform currentSlot) => currentHoveredSlot = currentSlot;
 
-    private void UpdateSlots()
+    public void UpdateSlots()
     {
         for (int i = 0; i < slots.Count; i++)
         {
-            Image temp;
-            slots[i].TryGetComponent<Image>(out temp);
-            if (temp) temp.sprite = playerInventory.inventory.Container[i].Item.sprite;  
+            slots[i].TryGetComponent<Image>(out Image tempImage);
+            if (tempImage)
+            {
+                if (playerInventory.Inventory.Container[i].CurrentAmounts > 0)
+                {
+                    tempImage.sprite = playerInventory.Inventory.Container[i].Item.sprite;
+                }
+                else
+                {
+                    tempImage.sprite = null;
+                }
+            }
+
+            TextMeshProUGUI amount = slots[i].GetComponentInChildren<TextMeshProUGUI>();
+            if (amount) amount.text = playerInventory.Inventory.Container[i].CurrentAmounts.ToString();
         }
     }
 
@@ -78,6 +88,26 @@ public class InventoryUI : MonoBehaviour, IPointerEnterHandler
     {
         if (Input.GetKeyDown(KeyCode.Q))
         {
+            //UI UPDATE
+            currentHoveredSlot.TryGetComponent<Image>(out Image tempImage);
+            tempImage.sprite = null;
+
+            TextMeshProUGUI amount = currentHoveredSlot.GetComponentInChildren<TextMeshProUGUI>();
+            amount.text = "0";
+
+            //ITEM SPAWN
+            int index = slots.FindIndex(x => x == currentHoveredSlot);
+            GameObject itemPrefabToSpawn = playerInventory.Inventory.Container[index].Item.prefab;
+
+            Debug.Log(playerInventory.Inventory.Container[index].CurrentAmounts);
+
+            Item item = itemPrefabToSpawn.GetComponent<Item>();
+            item.amount = playerInventory.Inventory.Container[index].CurrentAmounts;
+
+            Instantiate(itemPrefabToSpawn, playerInventory.gameObject.transform.position + playerInventory.gameObject.transform.forward, Quaternion.identity);
+
+            //REMOVE ITEM FROM INVENTORY
+            playerInventory.Inventory.RemoveItem(index);
 
         }
     }
